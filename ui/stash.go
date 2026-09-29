@@ -147,6 +147,7 @@ type stashModel struct {
 	showStatusMessage  bool
 	statusMessage      statusMessage
 	statusMessageTimer *time.Timer
+	sortOption         string
 
 	// Available document sections we can cycle through. We use a slice, rather
 	// than a map, because order is important.
@@ -220,7 +221,7 @@ func (m *stashModel) resetFiltering() {
 	m.filterInput.Reset()
 	m.filteredMarkdowns = nil
 
-	sortMarkdowns(m.markdowns)
+	sortMarkdowns(m.markdowns, m.sortOption)
 
 	// If the filtered section is present (it's always at the end) slice it out
 	// of the sections slice to remove it from the UI.
@@ -299,7 +300,7 @@ func (m *stashModel) addMarkdowns(mds ...*markdown) {
 
 	m.markdowns = append(m.markdowns, mds...)
 	if !m.filterApplied() {
-		sortMarkdowns(m.markdowns)
+		sortMarkdowns(m.markdowns, m.sortOption)
 	}
 
 	m.updatePagination()
@@ -373,7 +374,7 @@ func (m *stashModel) moveCursorDown() {
 
 // INIT
 
-func newStashModel(common *commonModel) stashModel {
+func newStashModel(common *commonModel, sortOption string) stashModel {
 	sp := spinner.New()
 	sp.Spinner = spinner.Line
 	sp.Style = stashSpinnerStyle
@@ -394,6 +395,7 @@ func newStashModel(common *commonModel) stashModel {
 		filterInput: si,
 		serverPage:  1,
 		sections:    s,
+		sortOption:  sortOption,
 	}
 
 	return m

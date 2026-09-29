@@ -149,7 +149,7 @@ func newModel(cfg Config, content string) tea.Model {
 		common: &common,
 		state:  stateShowStash,
 		pager:  newPagerModel(&common),
-		stash:  newStashModel(&common),
+		stash:  newStashModel(&common, cfg.SortOption),
 	}
 
 	path := cfg.Path
